@@ -13,6 +13,7 @@ from form_designer.utils import get_class
 class FormDefinitionFieldInline(admin.StackedInline):
     form = FormDefinitionFieldInlineForm
     model = FormDefinitionField
+    sortable_field_name = "position"
     extra = 1
     fieldsets = [
         (_('Basic'), {'fields': ['name', 'field_class', 'required', 'initial']}),

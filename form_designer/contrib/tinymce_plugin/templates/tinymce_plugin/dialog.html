@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>{#formdesigner_dlg.title}</title>
+        <script type="text/javascript" src="{{ STATIC_URL }}tiny_mce/tiny_mce_popup.js"></script>
+        <script type="text/javascript">
+            tinyMCEPopup.requireLangPack();
+
+            var FormDesignerDialog = {
+                init: function(ed) {
+                    //tinyMCEPopup.resizeToInnerSize();
+                },
+                insert: function() {
+                    var ed = tinyMCEPopup.editor,
+                        dom = ed.dom,
+                        f = document.forms[0];
+
+                    tinyMCEPopup.execCommand('mceInsertContent', false, dom.createHTML('img', {
+                        'id': f.forms.value,
+                        'class': 'tinymce_formdesigner_placeholder',
+                        'src': '{{ STATIC_URL }}img/tinymce_form_icon.jpg',
+                    }));
+
+                    tinyMCEPopup.close();
+                }
+            };
+
+            tinyMCEPopup.onInit.add(FormDesignerDialog.init, FormDesignerDialog);
+        </script>
+    </head>
+    <body role="application">
+        <h1>{#formdesigner_dlg.title}</h1>
+        <form onsubmit="FormDesignerDialog.insert();return false;" action="#">
+            <select name="forms" id="forms" style="margin: 1em 0;">
+                {% for id, name in forms %}<option value="{{ id }}">{{ name }}</option>{% endfor %}
+            </select>
+            <div class="mceActionPanel">
+                <input type="submit" id="insert" name="insert" value="{#insert}" />
+                <input type="button" id="cancel" name="cancel" value="{#cancel}" onclick="tinyMCEPopup.close();" />
+            </div>
+        </form>
+    </body>
+</html>

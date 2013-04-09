@@ -13,15 +13,10 @@ register = template.Library()
 @register.simple_tag(takes_context=True)
 def tinymce_formdesigner(context, html):
     """
-    This filter expects a chunk of HTML and will look for any <img> tags that
+    This tag expects a chunk of HTML and will look for any <img> tags that
     have a class of tinymce_formdesigner_placeholder, which will be inserted
     by the tinymce plugin. It then replaces those images with the actual form
     output
-
-    This should go before safe in your templates:
-
-        {{ page.content|tinymce_formdesigner|safe }}
-
     """
     soup = BeautifulSoup(html)
     for tag in soup.findAll("img", { "class": "tinymce_formdesigner_placeholder" }):

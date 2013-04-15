@@ -37,19 +37,20 @@ def process_form(request, form_definition, extra_context={}, disable_redirection
             files = handle_uploaded_files(form_definition, form)
 
             # Successful submission
-            messages.success(request, success_message)
             form_success = True
             if form_definition.log_data:
                 form_definition.log(form, request.user)
             if form_definition.mail_to:
                 form_definition.send_mail(form, files)
             if form_definition.success_redirect and not disable_redirection:
+                # only add a message if we're redirecting, otherwise its confusing
+                # when the message appears on the next page view
+                messages.success(request, success_message)
                 return HttpResponseRedirect(form_definition.action or '?')
             if form_definition.success_clear:
                 form = DesignedForm(form_definition) # clear form
         else:
             form_error = True
-            messages.error(request, error_message)
     else:
         if form_definition.allow_get_initial:
             form = DesignedForm(form_definition, initial_data=request.GET)

@@ -10,7 +10,12 @@ from django.conf import settings as django_settings
 from django.utils.datastructures import SortedDict
 
 # support for custom User models in Django 1.5+
-User = getattr(django_settings, 'AUTH_USER_MODEL', 'auth.User')
+try:
+    from django.contrib.auth import get_user_model
+except ImportError:  # django < 1.5
+    from django.contrib.auth.models import User
+else:
+    User = get_user_model()
 
 from form_designer.fields import TemplateTextField, TemplateCharField, ModelNameField, RegexpExpressionField
 from form_designer.utils import get_class

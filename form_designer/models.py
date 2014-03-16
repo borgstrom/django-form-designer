@@ -9,20 +9,15 @@ from django.core.mail import send_mail
 from django.conf import settings as django_settings
 from django.utils.datastructures import SortedDict
 
-# support for custom User models in Django 1.5+
-try:
-    from django.contrib.auth import get_user_model
-except ImportError:  # django < 1.5
-    from django.contrib.auth.models import User
-else:
-    User = get_user_model()
-
 from form_designer.fields import TemplateTextField, TemplateCharField, ModelNameField, RegexpExpressionField
 from form_designer.utils import get_class
 from form_designer import settings
 
 if settings.VALUE_PICKLEFIELD:
     from picklefield.fields import PickledObjectField
+
+# support for custom User models in Django 1.5+
+auth_user_model = getattr(django_settings, 'AUTH_USER_MODEL', 'auth.User')
 
 
 class FormValueDict(dict):
@@ -302,7 +297,7 @@ class FormDefinitionField(models.Model):
 class FormLog(models.Model):
     form_definition = models.ForeignKey(FormDefinition, related_name='logs')
     created = models.DateTimeField(_('Created'), auto_now=True)
-    created_by = models.ForeignKey(User, null=True, blank=True)
+    created_by = models.ForeignKey(auth_user_model, null=True, blank=True)
     _data = None
 
     def __unicode__(self):
